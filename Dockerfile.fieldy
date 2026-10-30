@@ -1,0 +1,22 @@
+FROM learnedmachine/speakr:latest
+
+WORKDIR /app
+
+# Copy patched source files
+COPY src/app.py /app/src/app.py
+COPY src/asr_bp.py /app/src/asr_bp.py
+COPY src/utils/audio.py /app/src/utils/audio.py
+
+# Copy NeMo binary and libraries
+COPY bin/nemo-speech /opt/nemo-speech/bin/nemo-speech
+COPY lib/ /opt/nemo-speech/lib/
+COPY nemo_lib/ /opt/nemo-speech/lib/
+COPY models/ /opt/nemo-speech/models/
+
+# Copy entrypoint with NeMo block
+COPY scripts/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh && \
+    chmod +x /opt/nemo-speech/bin/nemo-speech
+
+EXPOSE 8899
